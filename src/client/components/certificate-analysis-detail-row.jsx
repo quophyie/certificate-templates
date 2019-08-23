@@ -1,7 +1,7 @@
 import React from "react";
 import {Col, Form, FormGroup, Row} from "react-bootstrap";
 
-export default function AnalysisRow(props = {
+export default function CertificateAnalysisDetailRow(props = {
     leftLabel: "",
     rightLabel: "",
     leftHtmlElement: "input",

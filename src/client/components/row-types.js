@@ -1,7 +1,7 @@
-const RowStyles = Object.freeze({
+const RowTypes = Object.freeze({
     VARIANT: "VARIANT" ,
     OPTION: "OPTION",
     STANDARD: "STANDARD"
 })
 
-export default RowStyles
+export default RowTypes

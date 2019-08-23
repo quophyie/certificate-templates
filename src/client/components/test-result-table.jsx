@@ -1,41 +1,38 @@
 import React, {useState, useEffect} from "react";
 import {Table} from "react-bootstrap";
-import RowStyles from "./row-styles"
+import RowTypes from "./row-types"
 import AddVariantButton from './add-variant-button'
 import AddOptionButton from './add-option-button'
 
 import TestResultRow from "./test-result-row"
 
-export default function  TestResultTable (props){
 
-    let tableRows = props.results
-    const addRow =  () => {}
-    const testNames = props.testNames
 
-    const loadRows = () => {
-        let rows = []
-        let addItemButton = null
-        return props.results.map((result, index) => {
-            if (result.variants && result.variants.length > 0) {
+const loadRows = (props) => {
+    let rows = []
+    let addItemButton = null
+    props.newTests.map((newTest, index) => {
+        if (newTest) {
+            if (newTest.variants && newTest.variants.length > 0) {
                 // We have some variants
-                addItemButton = <AddVariantButton/>
+                addItemButton = <AddVariantButton onAddTest={props.onAddTest}/>
                 rows.push({
-                    name: result.name,
+                    name: newTest.name,
                     methods: [],
                     units: [],
-                    style: RowStyles.STANDARD,
+                    style: RowTypes.STANDARD,
                     addItemButton
 
                 })
-                result.variants.map(variant => {
+                newTest.variants.map(variant => {
                     // The variant has options
                     if (variant.options && variant.options.length > 0) {
-                        addItemButton = <AddOptionButton/>
+                        addItemButton = <AddOptionButton onAddTest={props.onAddTest}/>
                         rows.push({
                             name: variant.name,
                             methods: [],
                             units: [],
-                            style: RowStyles.VARIANT,
+                            style: RowTypes.VARIANT,
                             addItemButton
 
                         })
@@ -43,9 +40,9 @@ export default function  TestResultTable (props){
                         variant.options.map(option => {
                             rows.push({
                                 name: option,
-                                units: result.units,
-                                methods: result.methods,
-                                style: RowStyles.OPTION
+                                units: newTest.units,
+                                methods: newTest.methods,
+                                style: RowTypes.OPTION
 
                             })
                         })
@@ -53,9 +50,9 @@ export default function  TestResultTable (props){
                         // The variant does have any options
                         rows.push({
                             name: variant.name,
-                            units: result.units,
-                            methods: result.methods,
-                            style: RowStyles.VARIANT
+                            units: newTest.units,
+                            methods: newTest.methods,
+                            style: RowTypes.VARIANT
 
                         })
                     }
@@ -64,14 +61,55 @@ export default function  TestResultTable (props){
             } else {
                 // We dont have any variants
                 rows.push({
-                    name: result.name,
-                    methods: result.methods,
-                    units: result.units,
-                    style: RowStyles.STANDARD
+                    name: newTest.name,
+                    methods: newTest.methods,
+                    units: newTest.units,
+                    style: RowTypes.STANDARD
                 })
             }
-        })
-    }
+        }
+    })
+
+    return rows;
+}
+
+const loadRowData = (props) => {
+    let addItemButton = null
+
+    return  props.newTests.map((newTest) => {
+        if (newTest) {
+            if (newTest.style ===  RowTypes.STANDARD
+                && newTest.variants
+                && newTest.variants.length > 0) {
+                // We have some variants
+                addItemButton = <AddVariantButton onAddTest={props.onAddTest} parentId={newTest.id} defaultTestName={newTest.variants[0].name}/>
+                newTest.addItemButton = addItemButton
+
+            } else if (newTest.style ===  RowTypes.VARIANT && newTest.variants) {
+
+
+                const options = newTest.variants.flatMap(variant => variant.options)
+                // We have some options
+                if (newTest.style ===  RowTypes.VARIANT && options && options.length > 0) {
+                    addItemButton = <AddOptionButton onAddTest={props.onAddTest} parentId={newTest.id} defaultTestName={options[0].name}/>
+                    newTest.addItemButton = addItemButton
+                }
+            }
+
+        }
+        return newTest
+    })
+}
+
+
+function getTestNames(props) {
+
+}
+export default function  TestResultTable (props){
+
+    //let tableRows = props.results
+    let tableRows = loadRowData(props)
+    const addRow =  () => {}
 
     return(
 
@@ -91,23 +129,26 @@ export default function  TestResultTable (props){
             <tbody>
               {
                   tableRows.map((row, index) => {
-                      if (row) {
+
+                      if (row && row.showRow) {
                           return <TestResultRow id={index + 1}
                                                 key={index + 1}
-                                                testNames={testNames}
+                                                testNames={row.testNames}
                                                 units={row.units}
                                                 methods={row.methods}
                                                 style={row.style}
                                                 addItemButton={row.addItemButton}
                                                 onTestSelect={props.onTestSelect}
                                                 showRowControls={row.showRowControls}
-                                                onChecked={props.onChecked}/>
+                                                onChecked={props.onChecked}
+                                                onAddTest={props.onAddTest}/>
                       } else {
                           return null
                       }
 
 
                 })
+
               }
             </tbody>
         </Table>

@@ -24,11 +24,16 @@ const openAboutSidebar = () => {
 };
 
 const openById = (documentId) => {
-  return DocumentApp.openById(documentId);
+  const doc =  DocumentApp.openById(documentId);
+  Logger.log("DocumentId is: %s", documentId);
+  Logger.log("OpenById Document is: %s",  JSON.stringify(doc.getName()));
+  return doc.getName();
 }
 
 const getActiveDocument = ()=> {
-  return DocumentApp.getActiveDocument()
+  const doc =  DocumentApp.getActiveDocument();
+  Logger.log("getActiveDocument Document is %s: ", JSON.stringify(doc));
+  return doc;
 }
 
 

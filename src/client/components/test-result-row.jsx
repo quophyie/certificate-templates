@@ -1,5 +1,5 @@
 import React from 'react';
-import RowStyles from './row-styles'
+import RowTypes from './row-types'
 
 import {ButtonToolbar, Col, Form, FormGroup, Row} from "react-bootstrap";
 
@@ -12,19 +12,19 @@ export default function TestResultRow(props) {
     let rowStyle
     let rowClass
     let addButton = props.addItemButton
-    let showAddTestButton = props.showRowControls || (units.length > 0 || methods.length > 0)
+    let showAddTestButton = props.showRowControls // || (units.length > 0 || methods.length > 0)
 
 
 
     switch (props.style) {
-        case RowStyles.STANDARD: {
+        case RowTypes.STANDARD: {
             rowStyle = {
 
             }
             rowClass = ""
             break
         }
-        case RowStyles.VARIANT: {
+        case RowTypes.VARIANT: {
             rowClass = "row-variant"
             rowStyle = {
                 //marginLeft: "40px",
@@ -32,7 +32,7 @@ export default function TestResultRow(props) {
             }
             break
         }
-        case RowStyles.OPTION : {
+        case RowTypes.OPTION : {
             rowClass = "row-option"
             rowStyle = {
                 //marginLeft: "80px",
@@ -55,9 +55,11 @@ export default function TestResultRow(props) {
                 </td>
                 {/* Test Name */}
                 {/*<td style={rowStyle}>{testNames}</td> */}
-                <Form.Control as="select" onChange={(e) => props.onTestSelect(e, rowIndex)}>
-                    {testNames.map(testName => <option>{testName}</option>)}
-                </Form.Control>
+                <td style={rowStyle}>
+                    <Form.Control as="select" onChange={(e) => props.onTestSelect(e, rowIndex)} >
+                        {testNames.map(testName => <option>{testName}</option>)}
+                    </Form.Control>
+                </td>
 
                 {/* Units */}
                 <td>
